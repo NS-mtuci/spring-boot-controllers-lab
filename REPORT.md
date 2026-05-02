@@ -64,7 +64,7 @@ Content-Type: application/json
 
 Ссылка на репозиторий:
 
-`TODO: вставить ссылку на созданный GitHub-репозиторий`
+https://github.com/NS-mtuci/spring-boot-controllers-lab
 
 Скриншот 5: опубликованный репозиторий на GitHub.
 
