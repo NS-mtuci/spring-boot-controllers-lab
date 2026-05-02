@@ -1,0 +1,134 @@
+@baseUrl = http://localhost:8080
+
+### Aircraft: create
+POST {{baseUrl}}/api/aircraft
+Content-Type: application/json
+
+{
+  "model": "Airbus A321",
+  "tailNumber": "RA-73222",
+  "seats": 220
+}
+
+### Aircraft: get all
+GET {{baseUrl}}/api/aircraft
+
+### Aircraft: get by id
+GET {{baseUrl}}/api/aircraft/1
+
+### Aircraft: update
+PUT {{baseUrl}}/api/aircraft/1
+Content-Type: application/json
+
+{
+  "model": "Airbus A320neo",
+  "tailNumber": "RA-73001",
+  "seats": 186
+}
+
+### Aircraft: delete
+DELETE {{baseUrl}}/api/aircraft/4
+
+### Flights: create
+POST {{baseUrl}}/api/flights
+Content-Type: application/json
+
+{
+  "flightNumber": "SU300",
+  "departureCity": "Moscow",
+  "arrivalCity": "Sochi",
+  "departureTime": "2026-06-10T12:30:00",
+  "aircraftId": 1,
+  "status": "SCHEDULED"
+}
+
+### Flights: get all
+GET {{baseUrl}}/api/flights
+
+### Flights: get by id
+GET {{baseUrl}}/api/flights/1
+
+### Flights: update
+PUT {{baseUrl}}/api/flights/1
+Content-Type: application/json
+
+{
+  "flightNumber": "SU100",
+  "departureCity": "Moscow",
+  "arrivalCity": "Saint Petersburg",
+  "departureTime": "2026-06-11T09:15:00",
+  "aircraftId": 1,
+  "status": "SCHEDULED"
+}
+
+### Flights: delete
+DELETE {{baseUrl}}/api/flights/4
+
+### Bookings: create
+POST {{baseUrl}}/api/bookings
+Content-Type: application/json
+
+{
+  "passengerName": "Petr Ivanov",
+  "flightId": 1,
+  "seatNumber": "14B",
+  "status": "CONFIRMED"
+}
+
+### Bookings: get all
+GET {{baseUrl}}/api/bookings
+
+### Bookings: get by id
+GET {{baseUrl}}/api/bookings/1
+
+### Bookings: update
+PUT {{baseUrl}}/api/bookings/1
+Content-Type: application/json
+
+{
+  "passengerName": "Ivan Petrov",
+  "flightId": 1,
+  "seatNumber": "12A",
+  "status": "CONFIRMED"
+}
+
+### Bookings: delete
+DELETE {{baseUrl}}/api/bookings/3
+
+### Business operation 1: search flights by route and date
+GET {{baseUrl}}/api/airline/operations/flights/search?departureCity=Moscow&arrivalCity=Sochi&date=2026-06-10
+
+### Business operation 2: book a seat
+POST {{baseUrl}}/api/airline/operations/bookings
+Content-Type: application/json
+
+{
+  "passengerName": "Maria Smirnova",
+  "flightId": 1,
+  "seatNumber": "15C"
+}
+
+### Business operation 3: check in booking
+POST {{baseUrl}}/api/airline/operations/bookings/1/check-in
+
+### Business operation 4: cancel booking
+POST {{baseUrl}}/api/airline/operations/bookings/2/cancel
+
+### Business operation 5: show all bookings for a flight
+GET {{baseUrl}}/api/airline/operations/flights/1/bookings
+
+### Business operation 6: change flight status
+POST {{baseUrl}}/api/airline/operations/flights/1/status
+Content-Type: application/json
+
+{
+  "status": "BOARDING"
+}
+
+### Business operation 7: assign another aircraft to a flight
+POST {{baseUrl}}/api/airline/operations/flights/1/aircraft
+Content-Type: application/json
+
+{
+  "aircraftId": 2
+}

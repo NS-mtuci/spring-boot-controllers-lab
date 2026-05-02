@@ -187,3 +187,104 @@ Endpoint-ы:
 - управление самолетами, расписанием рейсов и статусами рейсов;
 - формирование посадочных талонов и отчетов по бронированиям;
 - уведомление пассажиров о задержках и отменах рейсов.
+
+## Лабораторная работа 3
+
+### Задание
+
+Добавить реляционную базу данных, создать таблицы для сущностей предметной области, настроить связи и ограничения, заполнить тестовые данные, перевести CRUD на работу с БД и добавить 5 бизнес-операций.
+
+### База данных
+
+В проект добавлена поддержка PostgreSQL через Spring Data JPA.
+
+Чувствительные параметры подключения вынесены в переменные окружения:
+
+```properties
+DB_URL=jdbc:postgresql://localhost:5432/airline_lab
+DB_USERNAME=postgres
+DB_PASSWORD=change_me
+DDL_AUTO=update
+```
+
+Скриншот 12: запущенная база данных PostgreSQL.
+
+![PostgreSQL](screenshots/12-postgresql.png)
+
+### Таблицы и связи
+
+Созданы таблицы:
+
+- `aircraft` - самолеты;
+- `flights` - рейсы;
+- `bookings` - бронирования.
+
+Связи:
+
+- `flights.aircraft_id` связан с `aircraft.id`;
+- `bookings.flight_id` связан с `flights.id`.
+
+Ограничения:
+
+- `aircraft.tail_number` уникален;
+- `flights.flight_number` уникален;
+- пара `bookings.flight_id` и `bookings.seat_number` уникальна.
+
+DDL-схема вынесена в файл `docs/database-schema.sql`.
+
+Скриншот 13: таблицы в базе данных.
+
+![Database tables](screenshots/13-database-tables.png)
+
+### Тестовые данные
+
+При первом запуске приложения `DataSeeder` добавляет несколько самолетов, рейсов и бронирований, чтобы сразу можно было выполнять запросы.
+
+Скриншот 14: тестовые данные в таблицах.
+
+![Seed data](screenshots/14-seed-data.png)
+
+### Перевод CRUD на БД
+
+Контроллеры лабораторной работы 2 теперь работают не с in-memory списками, а через service-слой и Spring Data JPA repositories:
+
+- `AircraftController` использует `AircraftService` и `AircraftRepository`;
+- `FlightController` использует `FlightService` и `FlightRepository`;
+- `BookingController` использует `BookingService` и `BookingRepository`.
+
+Скриншот 15: GET-запрос к `/api/flights` возвращает данные из БД.
+
+![GET flights from DB](screenshots/15-get-flights-db.png)
+
+### Бизнес-операции
+
+Добавлены операции, которые не являются обычным CRUD:
+
+- поиск рейсов по маршруту и дате: `GET /api/airline/operations/flights/search`;
+- бронирование места: `POST /api/airline/operations/bookings`;
+- отмена бронирования: `POST /api/airline/operations/bookings/{id}/cancel`;
+- регистрация пассажира на рейс: `POST /api/airline/operations/bookings/{id}/check-in`;
+- просмотр всех бронирований рейса: `GET /api/airline/operations/flights/{id}/bookings`;
+- изменение статуса рейса: `POST /api/airline/operations/flights/{id}/status`;
+- назначение самолета на рейс: `POST /api/airline/operations/flights/{id}/aircraft`.
+
+Операции изменения данных выполняются в транзакциях в service-слое.
+
+Скриншот 16: бронирование места через бизнес-операцию.
+
+![Book seat](screenshots/16-book-seat.png)
+
+Скриншот 17: регистрация пассажира на рейс.
+
+![Check in](screenshots/17-check-in.png)
+
+### Коллекция запросов
+
+Коллекция запросов для проверки находится в файле `requests/lab3-airline.http`.
+
+В коллекции есть:
+
+- CRUD-запросы для самолетов;
+- CRUD-запросы для рейсов;
+- CRUD-запросы для бронирований;
+- запросы для всех бизнес-операций.

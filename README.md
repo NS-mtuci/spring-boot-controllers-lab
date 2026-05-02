@@ -1,32 +1,52 @@
 # Spring Boot Controllers Lab
 
-Лабораторный проект на Spring Boot с примерами REST-контроллеров.
+Тема проекта: сервис авиаперевозок.
 
-## Используемые технологии
+## Стек
 
 - Java 21
 - Spring Boot 3.5.5
 - Spring Web
+- Spring Data JPA
 - Spring Validation
+- PostgreSQL
 - Maven Wrapper
 
-## Тема лабораторной работы 2
+## Основные сущности
 
-Тема: авиаперевозки.
+- `Aircraft` - самолет с моделью, уникальным бортовым номером и количеством мест.
+- `Flight` - рейс с уникальным номером, маршрутом, временем вылета, статусом и связанным самолетом.
+- `Booking` - бронирование пассажира на рейс с номером места и статусом.
 
-Сущности предметной области:
+Связи:
 
-- Aircraft - самолет.
-- Flight - рейс.
-- Booking - бронирование.
+- один самолет может выполнять много рейсов;
+- один рейс может иметь много бронирований;
+- место в рамках одного рейса уникально.
 
-## Запуск
+## Конфигурация БД
 
-```bash
-./mvnw spring-boot:run
+Чувствительные данные не хранятся в `application.properties`; приложение читает их из env.
+
+Пример переменных есть в `.env.example`:
+
+```properties
+DB_URL=jdbc:postgresql://localhost:5432/airline_lab
+DB_USERNAME=postgres
+DB_PASSWORD=change_me
+DDL_AUTO=update
 ```
 
-На Windows:
+Если установлен Docker, PostgreSQL можно поднять так:
+
+```powershell
+copy .env.example .env
+docker compose up -d
+```
+
+Для обычной локальной установки PostgreSQL нужно создать БД `airline_lab` и задать переменные окружения `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`.
+
+## Запуск
 
 ```powershell
 .\mvnw.cmd spring-boot:run
@@ -34,95 +54,50 @@
 
 Приложение запускается на `http://localhost:8080`.
 
-## Endpoint-ы лабораторной работы 1
+При первом запуске `DataSeeder` добавляет тестовые записи: несколько самолетов, рейсов и бронирований.
 
-| Method | URL | Description |
-| --- | --- | --- |
-| `GET` | `/` | Application info and endpoint list |
-| `GET` | `/api/hello?name=Fedor` | Query parameter example |
-| `GET` | `/api/numbers/5` | Path variable and validation example |
-| `GET` | `/api/students` | Returns all demo students |
-| `GET` | `/api/students/1` | Returns one student by id |
-| `POST` | `/api/students` | Creates a student from JSON body |
+## CRUD операции
 
-## CRUD endpoint-ы лабораторной работы 2
+Для каждой сущности реализованы создание, получение, изменение и удаление:
 
-### Aircraft
+- `POST /api/aircraft`, `GET /api/aircraft`, `GET /api/aircraft/{id}`, `PUT /api/aircraft/{id}`, `DELETE /api/aircraft/{id}`.
+- `POST /api/flights`, `GET /api/flights`, `GET /api/flights/{id}`, `PUT /api/flights/{id}`, `DELETE /api/flights/{id}`.
+- `POST /api/bookings`, `GET /api/bookings`, `GET /api/bookings/{id}`, `PUT /api/bookings/{id}`, `DELETE /api/bookings/{id}`.
 
-| Method | URL | Operation |
-| --- | --- | --- |
-| `POST` | `/api/aircraft` | Create aircraft |
-| `GET` | `/api/aircraft` | Get all aircraft |
-| `GET` | `/api/aircraft/{id}` | Get aircraft by id |
-| `PUT` | `/api/aircraft/{id}` | Update aircraft |
-| `DELETE` | `/api/aircraft/{id}` | Delete aircraft |
+## Бизнес-операции
 
-Example aircraft body:
+- `GET /api/airline/operations/flights/search` - поиск рейсов по маршруту и дате.
+- `POST /api/airline/operations/bookings` - бронирование места на рейс.
+- `POST /api/airline/operations/bookings/{id}/cancel` - отмена бронирования.
+- `POST /api/airline/operations/bookings/{id}/check-in` - регистрация пассажира на рейс.
+- `GET /api/airline/operations/flights/{id}/bookings` - получение бронирований конкретного рейса.
+- `POST /api/airline/operations/flights/{id}/status` - изменение статуса рейса.
+- `POST /api/airline/operations/flights/{id}/aircraft` - назначение самолета на рейс.
 
-```json
-{
-  "model": "Airbus A321",
-  "tailNumber": "RA-73222",
-  "seats": 220
-}
+Операции, которые меняют связанные таблицы, выполняются в транзакциях на уровне service-слоя.
+
+## Коллекция запросов
+
+Файл с запросами для проверки:
+
+```text
+requests/lab3-airline.http
 ```
 
-### Flights
+В нем есть CRUD-запросы по каждой сущности и сценарии бизнес-операций.
 
-| Method | URL | Operation |
-| --- | --- | --- |
-| `POST` | `/api/flights` | Create flight |
-| `GET` | `/api/flights` | Get all flights |
-| `GET` | `/api/flights/{id}` | Get flight by id |
-| `PUT` | `/api/flights/{id}` | Update flight |
-| `DELETE` | `/api/flights/{id}` | Delete flight |
+## Схема таблиц
 
-Example flight body:
+DDL-описание таблиц и ограничений находится в:
 
-```json
-{
-  "flightNumber": "SU300",
-  "departureCity": "Moscow",
-  "arrivalCity": "Sochi",
-  "departureTime": "2026-06-10T12:30:00",
-  "aircraftId": 1,
-  "status": "SCHEDULED"
-}
+```text
+docs/database-schema.sql
 ```
 
-### Bookings
-
-| Method | URL | Operation |
-| --- | --- | --- |
-| `POST` | `/api/bookings` | Create booking |
-| `GET` | `/api/bookings` | Get all bookings |
-| `GET` | `/api/bookings/{id}` | Get booking by id |
-| `PUT` | `/api/bookings/{id}` | Update booking |
-| `DELETE` | `/api/bookings/{id}` | Delete booking |
-
-Example booking body:
-
-```json
-{
-  "passengerName": "Petr Ivanov",
-  "flightId": 1,
-  "seatNumber": "14B",
-  "status": "CONFIRMED"
-}
-```
-
-## Будущие функции сервиса
-
-- Поиск рейсов по маршруту, дате, цене и доступным местам.
-- Регистрация пассажиров и хранение их данных.
-- Бронирование, оплата и отмена билетов.
-- Онлайн-регистрация на рейс и выбор места.
-- Управление самолетами, расписанием рейсов и статусами рейсов.
-- Формирование посадочных талонов и отчетов по бронированиям.
-- Уведомление пассажиров о задержках и отменах рейсов.
+В приложении таблицы создает Hibernate по JPA-сущностям.
 
 ## Проверка
 
-```bash
-./mvnw test
+```powershell
+.\mvnw.cmd test
 ```

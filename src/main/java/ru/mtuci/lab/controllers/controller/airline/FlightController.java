@@ -1,7 +1,5 @@
 package ru.mtuci.lab.controllers.controller.airline;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.validation.Valid;
@@ -17,80 +15,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import ru.mtuci.lab.controllers.controller.ResourceNotFoundException;
 import ru.mtuci.lab.controllers.dto.airline.FlightRequest;
 import ru.mtuci.lab.controllers.dto.airline.FlightResponse;
+import ru.mtuci.lab.controllers.service.FlightService;
 
 @RestController
 @RequestMapping("/api/flights")
 public class FlightController {
 
-    private final List<FlightResponse> flights = new ArrayList<>(List.of(
-            new FlightResponse(1L, "SU100", "Moscow", "Saint Petersburg", LocalDateTime.now().plusDays(3), 1L, "SCHEDULED"),
-            new FlightResponse(2L, "SU220", "Moscow", "Kazan", LocalDateTime.now().plusDays(5), 2L, "SCHEDULED")
-    ));
+    private final FlightService flightService;
+
+    public FlightController(FlightService flightService) {
+        this.flightService = flightService;
+    }
 
     @GetMapping
     public List<FlightResponse> findAll() {
-        return flights;
+        return flightService.findAll();
     }
 
     @GetMapping("/{id}")
     public FlightResponse findById(@PathVariable long id) {
-        return findFlight(id);
+        return flightService.findById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public FlightResponse create(@Valid @RequestBody FlightRequest request) {
-        FlightResponse response = toResponse(nextId(), request);
-        flights.add(response);
-        return response;
+        return flightService.create(request);
     }
 
     @PutMapping("/{id}")
     public FlightResponse update(@PathVariable long id, @Valid @RequestBody FlightRequest request) {
-        int index = findIndex(id);
-        FlightResponse response = toResponse(id, request);
-        flights.set(index, response);
-        return response;
+        return flightService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id) {
-        flights.remove(findIndex(id));
-    }
-
-    private FlightResponse toResponse(long id, FlightRequest request) {
-        return new FlightResponse(
-                id,
-                request.flightNumber(),
-                request.departureCity(),
-                request.arrivalCity(),
-                request.departureTime(),
-                request.aircraftId(),
-                request.status()
-        );
-    }
-
-    private FlightResponse findFlight(long id) {
-        return flights.stream()
-                .filter(item -> item.id() == id)
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Flight", id));
-    }
-
-    private int findIndex(long id) {
-        for (int index = 0; index < flights.size(); index++) {
-            if (flights.get(index).id() == id) {
-                return index;
-            }
-        }
-        throw new ResourceNotFoundException("Flight", id);
-    }
-
-    private long nextId() {
-        return flights.stream().mapToLong(FlightResponse::id).max().orElse(0L) + 1L;
+        flightService.delete(id);
     }
 }
