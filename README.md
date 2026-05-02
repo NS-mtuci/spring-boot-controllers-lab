@@ -1,51 +1,42 @@
 # Spring Boot Controllers Lab
 
-Java project for simple Spring Boot controller examples.
+Лабораторная работа по созданию простого Java-проекта на фреймворке **Spring Boot** с реализацией базовых контроллеров.
 
-## Stack
+## Описание проекта
+
+Проект создан для изучения работы контроллеров в Spring Boot.  
+В приложении реализованы простые HTTP-эндпоинты, которые позволяют проверить работу:
+
+- `@RestController`;
+- `@GetMapping`;
+- `@PostMapping`;
+- `@RequestParam`;
+- `@PathVariable`;
+- `@RequestBody`;
+- валидации входных параметров;
+- обработки простых JSON-запросов.
+
+## Используемые технологии
 
 - Java 21
 - Spring Boot 3.5.5
-- Maven Wrapper
 - Spring Web
 - Spring Validation
+- Maven
 
-## Run
+## Структура проекта
 
-```bash
-./mvnw spring-boot:run
-```
-
-On Windows:
-
-```powershell
-.\mvnw.cmd spring-boot:run
-```
-
-The application starts on `http://localhost:8080`.
-
-## Endpoints
-
-| Method | URL | Description |
-| --- | --- | --- |
-| `GET` | `/` | Application info and endpoint list |
-| `GET` | `/api/hello?name=Fedor` | Query parameter example |
-| `GET` | `/api/numbers/5` | Path variable and validation example |
-| `GET` | `/api/students` | Returns all demo students |
-| `GET` | `/api/students/1` | Returns one student by id |
-| `POST` | `/api/students` | Creates a student from JSON body |
-
-Example POST body:
-
-```json
-{
-  "fullName": "Petr Ivanov",
-  "groupName": "IVBO-03-25"
-}
-```
-
-## Verification
-
-```bash
-./mvnw test
-```
+```text
+src
+└── main
+    └── java
+        └── ru
+            └── mtuci
+                └── lab
+                    └── controllers
+                        ├── SpringBootControllersLabApplication.java
+                        └── controller
+                            ├── HomeController.java
+                            ├── HelloController.java
+                            ├── StudentController.java
+                            └── StudentNotFoundException.java
