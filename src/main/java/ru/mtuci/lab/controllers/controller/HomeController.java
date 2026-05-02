@@ -14,7 +14,13 @@ public class HomeController {
         return Map.of(
                 "message", "Spring Boot controllers lab",
                 "time", LocalDateTime.now(),
-                "endpoints", new String[] {"/api/hello", "/api/students", "/api/students/{id}"}
+                "endpoints", new String[] {
+                        "/api/hello",
+                        "/api/students",
+                        "/api/aircraft",
+                        "/api/flights",
+                        "/api/bookings"
+                }
         );
     }
 }
