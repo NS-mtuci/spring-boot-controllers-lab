@@ -29,11 +29,13 @@ public class Flight {
     @Column(nullable = false, unique = true, length = 20)
     private String flightNumber;
 
-    @Column(nullable = false, length = 80)
-    private String departureCity;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "departure_airport_id", nullable = false)
+    private Airport departureAirport;
 
-    @Column(nullable = false, length = 80)
-    private String arrivalCity;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "arrival_airport_id", nullable = false)
+    private Airport arrivalAirport;
 
     @Column(nullable = false)
     private LocalDateTime departureTime;
@@ -52,11 +54,11 @@ public class Flight {
     protected Flight() {
     }
 
-    public Flight(String flightNumber, String departureCity, String arrivalCity,
+    public Flight(String flightNumber, Airport departureAirport, Airport arrivalAirport,
             LocalDateTime departureTime, Aircraft aircraft, FlightStatus status) {
         this.flightNumber = flightNumber;
-        this.departureCity = departureCity;
-        this.arrivalCity = arrivalCity;
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
         this.departureTime = departureTime;
         this.aircraft = aircraft;
         this.status = status;
@@ -74,20 +76,20 @@ public class Flight {
         this.flightNumber = flightNumber;
     }
 
-    public String getDepartureCity() {
-        return departureCity;
+    public Airport getDepartureAirport() {
+        return departureAirport;
     }
 
-    public void setDepartureCity(String departureCity) {
-        this.departureCity = departureCity;
+    public void setDepartureAirport(Airport departureAirport) {
+        this.departureAirport = departureAirport;
     }
 
-    public String getArrivalCity() {
-        return arrivalCity;
+    public Airport getArrivalAirport() {
+        return arrivalAirport;
     }
 
-    public void setArrivalCity(String arrivalCity) {
-        this.arrivalCity = arrivalCity;
+    public void setArrivalAirport(Airport arrivalAirport) {
+        this.arrivalAirport = arrivalAirport;
     }
 
     public LocalDateTime getDepartureTime() {

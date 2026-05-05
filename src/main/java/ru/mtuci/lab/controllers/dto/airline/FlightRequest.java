@@ -13,13 +13,11 @@ public record FlightRequest(
         @Size(max = 20)
         String flightNumber,
 
-        @NotBlank
-        @Size(max = 80)
-        String departureCity,
+        @Min(1)
+        long departureAirportId,
 
-        @NotBlank
-        @Size(max = 80)
-        String arrivalCity,
+        @Min(1)
+        long arrivalAirportId,
 
         @NotNull
         @Future

@@ -131,8 +131,8 @@ Endpoint-ы:
 ```json
 {
   "flightNumber": "SU300",
-  "departureCity": "Moscow",
-  "arrivalCity": "Sochi",
+  "departureAirportId": 1,
+  "arrivalAirportId": 4,
   "departureTime": "2026-06-10T12:30:00",
   "aircraftId": 1,
   "status": "SCHEDULED"
@@ -161,7 +161,7 @@ Endpoint-ы:
 
 ```json
 {
-  "passengerName": "Petr Ivanov",
+  "passengerId": 1,
   "flightId": 1,
   "seatNumber": "14B",
   "status": "CONFIRMED"

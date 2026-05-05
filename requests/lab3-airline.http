@@ -1,5 +1,36 @@
 @baseUrl = http://localhost:8080
 
+### Airports: create
+POST {{baseUrl}}/api/airports
+Content-Type: application/json
+
+{
+  "code": "DME",
+  "name": "Domodedovo Airport",
+  "city": "Moscow",
+  "country": "Russia"
+}
+
+### Airports: get all
+GET {{baseUrl}}/api/airports
+
+### Airports: get by id
+GET {{baseUrl}}/api/airports/1
+
+### Airports: update
+PUT {{baseUrl}}/api/airports/1
+Content-Type: application/json
+
+{
+  "code": "SVO",
+  "name": "Sheremetyevo International Airport",
+  "city": "Moscow",
+  "country": "Russia"
+}
+
+### Airports: delete
+DELETE {{baseUrl}}/api/airports/5
+
 ### Aircraft: create
 POST {{baseUrl}}/api/aircraft
 Content-Type: application/json
@@ -29,14 +60,45 @@ Content-Type: application/json
 ### Aircraft: delete
 DELETE {{baseUrl}}/api/aircraft/4
 
+### Passengers: create
+POST {{baseUrl}}/api/passengers
+Content-Type: application/json
+
+{
+  "firstName": "Maria",
+  "lastName": "Smirnova",
+  "email": "maria.smirnova@example.com",
+  "documentNumber": "4512-000111"
+}
+
+### Passengers: get all
+GET {{baseUrl}}/api/passengers
+
+### Passengers: get by id
+GET {{baseUrl}}/api/passengers/1
+
+### Passengers: update
+PUT {{baseUrl}}/api/passengers/1
+Content-Type: application/json
+
+{
+  "firstName": "Ivan",
+  "lastName": "Petrov",
+  "email": "ivan.petrov@example.com",
+  "documentNumber": "4510-123456"
+}
+
+### Passengers: delete
+DELETE {{baseUrl}}/api/passengers/3
+
 ### Flights: create
 POST {{baseUrl}}/api/flights
 Content-Type: application/json
 
 {
   "flightNumber": "SU300",
-  "departureCity": "Moscow",
-  "arrivalCity": "Sochi",
+  "departureAirportId": 1,
+  "arrivalAirportId": 4,
   "departureTime": "2026-06-10T12:30:00",
   "aircraftId": 1,
   "status": "SCHEDULED"
@@ -54,8 +116,8 @@ Content-Type: application/json
 
 {
   "flightNumber": "SU100",
-  "departureCity": "Moscow",
-  "arrivalCity": "Saint Petersburg",
+  "departureAirportId": 1,
+  "arrivalAirportId": 2,
   "departureTime": "2026-06-11T09:15:00",
   "aircraftId": 1,
   "status": "SCHEDULED"
@@ -69,7 +131,7 @@ POST {{baseUrl}}/api/bookings
 Content-Type: application/json
 
 {
-  "passengerName": "Petr Ivanov",
+  "passengerId": 1,
   "flightId": 1,
   "seatNumber": "14B",
   "status": "CONFIRMED"
@@ -86,7 +148,7 @@ PUT {{baseUrl}}/api/bookings/1
 Content-Type: application/json
 
 {
-  "passengerName": "Ivan Petrov",
+  "passengerId": 1,
   "flightId": 1,
   "seatNumber": "12A",
   "status": "CONFIRMED"
@@ -96,14 +158,14 @@ Content-Type: application/json
 DELETE {{baseUrl}}/api/bookings/3
 
 ### Business operation 1: search flights by route and date
-GET {{baseUrl}}/api/airline/operations/flights/search?departureCity=Moscow&arrivalCity=Sochi&date=2026-06-10
+GET {{baseUrl}}/api/airline/operations/flights/search?departureAirportCode=SVO&arrivalAirportCode=AER&date=2026-06-10
 
 ### Business operation 2: book a seat
 POST {{baseUrl}}/api/airline/operations/bookings
 Content-Type: application/json
 
 {
-  "passengerName": "Maria Smirnova",
+  "passengerId": 1,
   "flightId": 1,
   "seatNumber": "15C"
 }

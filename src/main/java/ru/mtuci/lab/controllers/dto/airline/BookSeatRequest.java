@@ -5,9 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record BookSeatRequest(
-        @NotBlank
-        @Size(max = 120)
-        String passengerName,
+        @Min(1)
+        long passengerId,
 
         @Min(1)
         long flightId,

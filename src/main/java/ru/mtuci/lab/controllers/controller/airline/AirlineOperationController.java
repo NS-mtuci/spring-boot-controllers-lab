@@ -36,11 +36,11 @@ public class AirlineOperationController {
 
     @GetMapping("/flights/search")
     public List<FlightResponse> searchFlights(
-            @RequestParam String departureCity,
-            @RequestParam String arrivalCity,
+            @RequestParam String departureAirportCode,
+            @RequestParam String arrivalAirportCode,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-        return flightService.search(departureCity, arrivalCity, date);
+        return flightService.search(departureAirportCode, arrivalAirportCode, date);
     }
 
     @PostMapping("/bookings")

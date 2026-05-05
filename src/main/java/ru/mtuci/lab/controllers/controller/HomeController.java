@@ -17,7 +17,9 @@ public class HomeController {
                 "endpoints", new String[] {
                         "/api/hello",
                         "/api/students",
+                        "/api/airports",
                         "/api/aircraft",
+                        "/api/passengers",
                         "/api/flights",
                         "/api/bookings"
                 }

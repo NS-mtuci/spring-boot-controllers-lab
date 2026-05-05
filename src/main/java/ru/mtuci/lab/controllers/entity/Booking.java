@@ -11,21 +11,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(
-        name = "bookings",
-        uniqueConstraints = @UniqueConstraint(name = "uk_booking_flight_seat", columnNames = {"flight_id", "seat_number"})
-)
+@Table(name = "bookings")
 public class Booking {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 120)
-    private String passengerName;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "passenger_id", nullable = false)
+    private Passenger passenger;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "flight_id", nullable = false)
@@ -41,8 +38,8 @@ public class Booking {
     protected Booking() {
     }
 
-    public Booking(String passengerName, Flight flight, String seatNumber, BookingStatus status) {
-        this.passengerName = passengerName;
+    public Booking(Passenger passenger, Flight flight, String seatNumber, BookingStatus status) {
+        this.passenger = passenger;
         this.flight = flight;
         this.seatNumber = seatNumber;
         this.status = status;
@@ -52,12 +49,12 @@ public class Booking {
         return id;
     }
 
-    public String getPassengerName() {
-        return passengerName;
+    public Passenger getPassenger() {
+        return passenger;
     }
 
-    public void setPassengerName(String passengerName) {
-        this.passengerName = passengerName;
+    public void setPassenger(Passenger passenger) {
+        this.passenger = passenger;
     }
 
     public Flight getFlight() {

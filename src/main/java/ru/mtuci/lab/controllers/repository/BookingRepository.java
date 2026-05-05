@@ -11,7 +11,11 @@ import ru.mtuci.lab.controllers.entity.Flight;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    Optional<Booking> findByFlightAndSeatNumber(Flight flight, String seatNumber);
+    Optional<Booking> findByFlightAndSeatNumberAndStatusNot(
+            Flight flight,
+            String seatNumber,
+            BookingStatus status
+    );
 
     long countByFlightAndStatusNot(Flight flight, BookingStatus status);
 
